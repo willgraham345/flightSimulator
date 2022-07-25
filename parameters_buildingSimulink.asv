@@ -51,12 +51,12 @@ Gamma = ...
      -cQ, cQ, -cQ, cQ;];
 GammaInv = inv(Gamma); % 
 
-u1.signals.values = [5*m*g*ones(n,1)];
+u1.signals.values = [m*g*ones(n,1)];
 u1.time = t;
 %%
 
-% fake_motors.signals.values = [3000*ones(n,1), 0*ones(n,1), 0*ones(n,1), 0*ones(n,1)];
-% fake_motors.time = t;
+fake_motors.signals.values = [3000*ones(n,1), 1*ones(n,1), 0*ones(n,1), 0*ones(n,1)];
+fake_motors.time = t;
 
 
 
@@ -84,10 +84,4 @@ R_AtoB = ...
 XYZ_initial_condition = [0, 0, 0];
 
 
-
-%%
-eta_des.values = [zeros(n,1), zeros(n,1), sqrt(t)];
-eta_des.time = t;
-Kp_eta3 = 0.5;
-Kd_eta3 = .05;  
 fprintf('Finished loading program parameters!\n')
