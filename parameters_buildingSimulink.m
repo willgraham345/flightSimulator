@@ -85,9 +85,31 @@ XYZ_initial_condition = [0, 0, 0];
 
 
 
-%%
-eta_des.values = [zeros(n,1), zeros(n,1), sqrt(t)];
+%% Trajectory Planning
+
+wpts = [0, 1;
+        0, 0;
+        1, 1;];
+tpts = [0, 10];
+[q,qd,qdd,pp] = quinticpolytraj(wpts,tpts, t);
+
+eta_des.signals.values = q';
 eta_des.time = t;
-Kp_eta3 = 0.5;
-Kd_eta3 = .05;  
+yaw_des.signals.values = 0.*ones(n,1);
+yaw_des.time = t;
+
+eta_fake.signals.values = q'.*0;
+eta_fake.time = t;
+
+% figure(1)
+% plot3(q(1,:), q(2,:), q(3,:))
+Kp_z_eta = 0.5;
+Kd_z_eta = 0;  
+
+Kp_eta = 0.5;
+Kd_eta = 0;
+
+
+
+
 fprintf('Finished loading program parameters!\n')
