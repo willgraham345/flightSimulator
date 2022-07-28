@@ -6,6 +6,8 @@ fprintf('Started loading program parameters...\n')
 g = 9.81; %m/s^2
 
 
+%% Describing rotation matrix calculations w/example
+
 %% Attitude Controller Block (Working)
 Kp_attitude = 0.5;
 Kd_attitude = 0.01;
@@ -53,36 +55,26 @@ GammaInv = inv(Gamma); %
 
 u1.signals.values = [5*m*g*ones(n,1)];
 u1.time = t;
-%%
+%% Free Body Simulator
 
-% fake_motors.signals.values = [3000*ones(n,1), 0*ones(n,1), 0*ones(n,1), 0*ones(n,1)];
-% fake_motors.time = t;
+fake_motors.signals.values = [-.5.*t+3, (5-t).^2, t, t.^1.5-3];
+fake_motors.time = t;
 
-
-
-
-theta = 0;
-psi = 0;
-phi = 0;
-
-del_theta = 0;
-del_phi = 0;
-
-C_psi = cos(psi);
-S_psi = sin(psi);
-C_phi = cos(phi);
-S_phi = sin(phi);
-C_theta = cos(theta);
-S_theta = sin(theta);
+% phi = x axis
+% psi = z axis
+% theta = y axis
+phi = 0; theta = pi/4; psi = 0;
+gamma = [phi, theta, psi]; % [rad]
+R_BmapToA = eul2rotm(gamma, "ZYX"); % ZYX angle rotation order, gamma HAS to be in radians
+% v_I = R_BmapToA*[0, 0, 1]';
 
 
-R_AtoB = ...
-    [C_psi*C_theta-S_phi*S_psi*S_theta, -C_phi*S_psi, C_psi*S_theta+C_theta*S_phi*S_psi;
-    C_theta*S_psi+C_psi*S_phi*S_theta, C_phi*C_psi, S_psi*S_theta-C_psi*C_theta*S_phi;
-    -C_phi*S_theta, S_phi, C_phi*C_theta;];
 
-XYZ_initial_condition = [0, 0, 0];
-
+% % [R_BmapA, R_AmapB]= fcn(gamma)
+% % NOTE: Gamma is a vector of roll, pitch, yaw angles in RADIANS
+% % gamma = [phi, theta, psi] [rad]
+% R_BmapA = eul2rotm(gamma, "ZYX"); % ZYX angle rotation order, gamma HAS to be in radians
+% R_AmapB = inv(R_BmapA);
 
 
 %% Trajectory Planning

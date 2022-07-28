@@ -39,3 +39,6 @@ plot(tvec, qdd)
 figure(7)
 plot(t, qVals)
 
+
+
+
