@@ -57,8 +57,9 @@ u1.signals.values = [5*m*g*ones(n,1)];
 u1.time = t;
 %% Free Body Simulator
 
-fake_motors.signals.values = [-.5.*t+3, (5-t).^2, t, t.^1.5-3];
+fake_motors.signals.values = [m*g*1.001.*ones(n,1), 0.*t, 0.*t, 0.*t];
 fake_motors.time = t;
+XYZ_initial_condition = [0, 0, 0];
 
 % phi = x axis
 % psi = z axis
