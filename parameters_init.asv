@@ -28,4 +28,4 @@ fprintf('Finished loading program parameters!\n')
 
 K = [-5, 5, 0]
 
-u2 = J*(Gain.attitude.Kp.*K)'
+u2 = J*Gain.attitude.Kp.*K
