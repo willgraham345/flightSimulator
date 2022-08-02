@@ -29,13 +29,22 @@ fake_motors.signals.values = [zVals, 0.*t, 0.*t, 0.*t];
 fake_motors.time = t;
 XYZ_initial_condition = [0, 0, 0];
 
-%% Gains for attitude and position stuff 
+%% Gains section
 Gain.attitude.Kp = [3000, 3000, 3000]; % Coming directly from project_report
 Gain.attitude.Kd = [300, 300, 300];
 Gain.position.Kp = [5, 5, 20];
 Gain.position.Kd = [5, 5, 10];
 Gain.motors.Kp = 1;
 
+%% Trajectory Control Section
+
+wpts = [0, 1; 0, 1; 0, 1;]
+tpts = [0; 10];
+[q,qd,qdd,pp] = quinticpolytraj(wpts,tpts, t);
+eta_des.signals.values = q';
+eta_des.time = t;
+% still needs yaw control inputs...
+% yaw_des.signals.values = 
 
 
 %%
