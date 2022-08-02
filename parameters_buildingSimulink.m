@@ -19,7 +19,7 @@ attitude.signals.values = [0.1.*ones(n,1), 0.*ones(n,1), 0.*ones(n,1)];
 attitude.time = t;
 
 attitude_des.signals.values = [0.*ones(n,1), 0.*ones(n,1), 0.*ones(n,1)];
-attitude_des.time = t;
+attitude_des.time = t; 
 
 
 omega.signals.values = [0.*ones(n,1), 0.*ones(n,1), 0.*ones(n,1)];
