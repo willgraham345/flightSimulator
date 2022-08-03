@@ -57,7 +57,7 @@ title("Yaw");
 
 %% Thrust and Tau Plot
 fig3 = figure(3);
-fig3.Position = [50 500 1200 900];
+fig3.Position = [50 250 1200 900];
 
 sgtitle('Thrust/Tau and $ThrustTau{des}$ vs Time', 'Interpreter', 'latex');
 s7 = subplot(4,1,1);
