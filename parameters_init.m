@@ -3,12 +3,19 @@ close all; clear all; clc; format compact;
 
 fprintf('Started loading program parameters...\n')
 %% Load global constants
+% Determine time of simulation here
+t_simulation = 3
+t = [0:.01:t_simulation]'; % Do not delete, these are so simulink thinks each value has a time associated with it
+
+
+
+
+
 g = 9.81; %m/s^2
 m = 4.34;
 d = 0.315;
 c_taoF = 8.004*10^-4;
 L = d/2;
-t = [0:.01:10.0]'; % Do not delete, these are so simulink thinks each value has a time associated with it
 n = length(t);
 cT = c_taoF; % Thrust coefficient (Couples motor speed (omega^2) to thrust), determined from static thrust tests
 cQ = cT*10^-3; % Reaction torque (due to rotor drag acting on airframe omega^2 to moment), also determined from static thrust tests
@@ -41,10 +48,11 @@ Gain.motors.Kp = 1;
 wpts = [0, 1; 0, 1; 0, 1;]
 tpts = [0; 10];
 [q,qd,qdd,pp] = quinticpolytraj(wpts,tpts, t);
-eta_des.signals.values = q';
-eta_des.time = t;
+zeta_des.signals.values = q';
+zeta_des.time = t;
 % still needs yaw control inputs...
-% yaw_des.signals.values = 
+yaw_des.signals.values = zeros(n,1);
+yaw_des.time = t;
 
 
 %%
