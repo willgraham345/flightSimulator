@@ -4,9 +4,10 @@ close all; clear all; clc; format compact;
 fprintf('Started loading program parameters...\n')
 %% Load global constants
 % Determine time of simulation here
-t_simulation = 3
+t_simulation = 3;
 t = [0:.01:t_simulation]'; % Do not delete, these are so simulink thinks each value has a time associated with it
-
+formatSpec = "Simulation time of: %2.2f seconds \n";
+fprintf(formatSpec, t_simulation)
 
 
 
@@ -41,11 +42,11 @@ Gain.attitude.Kp = [3000, 3000, 3000]; % Coming directly from project_report
 Gain.attitude.Kd = [300, 300, 300];
 Gain.position.Kp = [5, 5, 20];
 Gain.position.Kd = [5, 5, 10];
-Gain.motors.Kp = 1;
+Gain.motors.Kp = 1/cT;
 
 %% Trajectory Control Section
 
-wpts = [0, 1; 0, 1; 0, 1;]
+wpts = [0, 0; 0, 0; 0, 1;];
 tpts = [0; 10];
 [q,qd,qdd,pp] = quinticpolytraj(wpts,tpts, t);
 zeta_des.signals.values = q';
