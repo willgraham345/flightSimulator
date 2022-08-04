@@ -13,20 +13,20 @@ fig1 = figure(1);
 fig1.Position = [50 50 1200 900];
 sgtitle('$\zeta$ and $\zeta_{des}$ vs Time', 'Interpreter','latex');
 s1 = subplot(3,1,1);
-d1 = plot(t,zeta_des.signals.values(:,1), 'DisplayName', 'X des');
+% d1 = plot(t,zeta_des.signals.values(:,1), 'DisplayName', 'X des');
 hold on
 a1 = plot(out.tout, XYZ(:,1), 'DisplayName', 'X');
 title("X");
 legend();
 
 s2 = subplot(3,1,2);
-d2 = plot(t,zeta_des.signals.values(:,2), 'DisplayName', 'Y des');
+% d2 = plot(t,zeta_des.signals.values(:,2), 'DisplayName', 'Y des');
 hold on
 a2 = plot(out.tout, XYZ(:,2), 'DisplayName','Y');
 legend();
 title("Y");
 s3 = subplot(3,1,3);
-d3 = plot(t,zeta_des.signals.values(:,3), 'DisplayName', 'Z des');
+% d3 = plot(t,zeta_des.signals.values(:,3), 'DisplayName', 'Z des');
 hold on
 a3 = plot(out.tout, XYZ(:,3),'DisplayName', 'Z');
 legend();
@@ -107,7 +107,8 @@ title('X Acceleration');
 
 s12 = subplot(3,1,2);
 a12 = plot(out.tout, acceleration(:,2), 'DisplayName', '$\ddot{\zeta}_y$');
-
+title("Y Acceleration")
 s13 = subplot(3,1,3);
 a13 = plot(out.tout, acceleration(:,3), 'DisplayName', '$\ddot{\zeta}a_z$');
+title("Z Acceleration")
 
