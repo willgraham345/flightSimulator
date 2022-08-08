@@ -47,32 +47,36 @@ Gamma = ...
      -cQ, cQ, -cQ, cQ;];
 GammaInv = inv(Gamma);
 %% Gains section
-Gain.attitude.Kp = [3000, 3000, 3000]; % Coming directly from project_report
-Gain.attitude.Kd = [300, 300, 300];
+Gain.attitude.Kp = [.006, .006, .01]; %[3000, 3000, 3000]; % Coming directly from project_report
+Gain.attitude.Kd = [0, 0, 0];%[0.013, 0.013, 0.03]; %[300, 300, 300];
 Gain.position.Kp = [5, 5, 20];
 Gain.position.Kd = [5, 5, 10];
 Gain.motors.Kp = 1/cT;
 
+%% Drag Section
+ProjectionMatrix_XY = [1, 0, 0; 0, 1, 0];
+% dx = 
+
 %% Free Body Simulator Motor stuff (probably can delete later)
-syms x
-z_piecewise = piecewise(x < 5, m*g*1.1, x>= 5, m*g*.9);
-zVals = double(subs(z_piecewise, x, t));
-fake_motors.signals.values = [zVals, 0.*t, 0.*t, 0.*t];
-fake_motors.time = t;
-XYZ_initial_condition = [0, 0, 0];
+% syms x
+% z_piecewise = piecewise(x < 5, m*g*1.1, x>= 5, m*g*.9);
+% zVals = double(subs(z_piecewise, x, t));
+% fake_motors.signals.values = [zVals, 0.*t, 0.*t, 0.*t];
+% fake_motors.time = t;
+% XYZ_initial_condition = [0, 0, 0];
 
 
 
 %% Trajectory Control Section
 
-wpts = [0, 0; 0, 0; 0, 0;];
-tpts = [0; 10];
-[q,qd,qdd,pp] = quinticpolytraj(wpts,tpts, t);
-zeta_des.signals.values = q';
-zeta_des.time = t;
-% still needs yaw control inputs...
-yaw_des.signals.values = zeros(n,1);
-yaw_des.time = t;
+% wpts = [0, 0; 0, 0; 0, 0;];
+% tpts = [0; 10];
+% [q,qd,qdd,pp] = quinticpolytraj(wpts,tpts, t);
+% zeta_des.signals.values = q';
+% zeta_des.time = t;
+% % still needs yaw control inputs...
+% yaw_des.signals.values = zeros(n,1);
+% yaw_des.time = t;
 
 
 %%
