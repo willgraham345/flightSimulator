@@ -4,7 +4,7 @@ close all; clear all; clc; format compact;
 fprintf('Started loading program parameters...\n')
 %% Load constants, determine simulation time, simulation dynamics
 % Determine time of simulation here
-t_simulation = 3;
+t_simulation = 5;
 formatSpec = "Simulation time of: %2.2f seconds \n";
 fprintf(formatSpec, t_simulation)
 g = 9.81;
@@ -47,15 +47,15 @@ Gamma = ...
      -cQ, cQ, -cQ, cQ;];
 GammaInv = inv(Gamma);
 %% Gains section
-Gain.attitude.Kp = [.006, .006, .01]; %[3000, 3000, 3000]; % Coming directly from project_report
-Gain.attitude.Kd = [0, 0, 0];%[0.013, 0.013, 0.03]; %[300, 300, 300];
+Gain.attitude.Kp = [.0001, .0001, 1e-5]; %[3000, 3000, 3000]; % Coming directly from project_report
+Gain.attitude.Kd = [1e-8, 1e-8, 1e-8];%[0.013, 0.013, 0.03]; %[300, 300, 300];
 Gain.position.Kp = [5, 5, 20];
 Gain.position.Kd = [5, 5, 10];
 Gain.motors.Kp = 1/cT;
 
 %% Drag Section
 ProjectionMatrix_XY = [1, 0, 0; 0, 1, 0];
-% dx = 
+
 
 %% Free Body Simulator Motor stuff (probably can delete later)
 % syms x

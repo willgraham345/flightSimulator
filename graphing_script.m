@@ -3,6 +3,7 @@ close all; clc
 out = sim('flightSimulator.slx',t_simulation); % most basic way to simulate with command script.
 XYZ = out.XYZ.Data;
 attitude_actual = out.attitude.Data;
+attitude_des = out.attitude_des.Data;
 omega_actual = out.omegas.Data;
 acceleration_actual = out.acceleration.Data;
 ThrustTau = out.ThrustTau.Data;
@@ -38,24 +39,24 @@ title("Z");
 fig2 = figure(2);
 sgtitle('Attitude and $Attitude_{des}$ vs Time', 'Interpreter', 'latex');
 s4 = subplot(3,1,1);
-% d4 = plot(t,attitude_des.signals.values(:,1), 'DisplayName', 'X des');
+d4 = plot(out.tout,attitude_des(:,1), 'DisplayName', 'phi des');
 hold on;
 a4 = plot(out.tout, attitude_actual(:,1), 'DisplayName', 'X');
-title("Roll (phi)");
+title("\phi (Roll)");
 legend();
 
 s5 = subplot(3,1,2);
-% d5 = plot(t,attitude_des.signals.values(:,2), 'DisplayName', 'Y des');
+d5 = plot(out.tout,attitude_des(:,2), 'DisplayName', 'Y des');
 hold on
 a5 = plot(out.tout, attitude_actual(:,2), 'DisplayName','Y');
 legend();
-title("Pitch")
+title("\theta (Pitch)")
 s6 = subplot(3,1,3);
-% d6 = plot(t,attitude_des.signals.values(:,3), 'DisplayName', 'Z des');
+d6 = plot(out.tout,attitude_des(:,3), 'DisplayName', 'Z des');
 hold on
 a6 = plot(out.tout, attitude_actual(:,3),'DisplayName', 'Z');
 legend();
-title("Yaw");
+title("\psi (Yaw)");
 
 %% Thrust and Tau Plot
 fig3 = figure(3);
