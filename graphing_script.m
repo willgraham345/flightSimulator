@@ -7,7 +7,7 @@ attitude_des = out.attitude_des.Data;
 omega_actual = out.omegas.Data;
 acceleration_actual = out.acceleration.Data;
 ThrustTau = out.ThrustTau.Data;
-u2 = out.u2.Data;
+u2 = out.u2.Data; 
 e_R = out.error_R.Data;
 % velocity_actual = out.velocities_Data;
 

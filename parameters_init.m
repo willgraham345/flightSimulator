@@ -24,6 +24,7 @@ Crazyflie.k_M = 1.5e-9; %[Nm/rpm^2]
 Crazyflie.k_f = 6.11e-8; %[N/rpm^2]
 Crazyflie.k_motor = 20; %[1/second]
 Crazyflie.RotMatrix = "ZXY"; %Order of rotations
+Crazyflie.drag = 0.1; %[kg/s]
 
 
 
@@ -47,15 +48,18 @@ Gamma = ...
      -cQ, cQ, -cQ, cQ;];
 GammaInv = inv(Gamma);
 %% Gains section
-Gain.attitude.Kp = [.0001, .0001, 1e-5]; %[3000, 3000, 3000]; % Coming directly from project_report
-Gain.attitude.Kd = [1e-8, 1e-8, 1e-8];%[0.013, 0.013, 0.03]; %[300, 300, 300];
+Gain.attitude.Kp = [.06, .06, .01]; %[3000, 3000, 3000]; % Coming directly from project_report
+Gain.attitude.Kd = [.013, .013, .03];%[0.013, 0.013, 0.03]; %[300, 300, 300];
 Gain.position.Kp = [5, 5, 20];
 Gain.position.Kd = [5, 5, 10];
 Gain.motors.Kp = 1/cT;
 
 %% Drag Section
-ProjectionMatrix_XY = [1, 0, 0; 0, 1, 0];
-
+dx = .1; % val taken from Usman Muhammad model
+dy = .1; % val taken from Usman Muhammad model
+dragConstants = [dx, dy, 0]; % Random values, just threw these in
+projectionMatrix = [1, 0, 0; 0, 1, 0]; % 
+% flapMatrix = [A1c, -A1s, 0; A1s, A1c, 0; 0, 0, 0];
 
 %% Free Body Simulator Motor stuff (probably can delete later)
 % syms x
