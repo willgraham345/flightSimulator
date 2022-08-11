@@ -6,7 +6,7 @@ fprintf('Started loading program parameters...\n')
 % Determine time of simulation here
 t_simulation = 5;
 model = 'crazyflie'; % crazyflie
-trajectoryType = 'diagonalXY'; % hover or linearX (future work should include linearY and box and circle)
+trajectoryType = 'hover'; % hover or linearX (future work should include linearY and box and circle)
 formatSpec = "Simulation time of: %2.2f seconds \n";
 
 
@@ -62,10 +62,10 @@ Gain.position.Kp = [5, 5, 20];
 Gain.position.Kd = [5, 5, 10];
 Gain.motors.Kp = 1/cT;
 
-Gain.saturation.attitude.Thrust = [1,-1];
-Gain.saturation.attitude.tauX = [1,-1];
-Gain.saturation.attitude.tauY = [1,-1];
-Gain.saturation.attitude.tauZ = [1,-1];
+Gain.saturation.attitude.Thrust = [100,-100];
+Gain.saturation.attitude.tauX = [5,-5];
+Gain.saturation.attitude.tauY = [5,-5];
+Gain.saturation.attitude.tauZ = [5,-5];
 %% Drag Section
 dx = .1; % val taken from Usman Muhammad model
 dy = .1; % val taken from Usman Muhammad model
@@ -98,17 +98,6 @@ switch trajectoryType
         % still needs yaw control inputs...
         yaw_des.signals.values = zeros(n,1);
         yaw_des.time = t;
-    case 'diagonalXY'
-        wpts = [0, 1; 0, 1; 0, 0;];
-        tpts = [0; 5];
-        [q,qd,qdd,pp] = quinticpolytraj(wpts,tpts, t);
-        zeta_des.signals.values = q';
-        zeta_des.time = t;
-        
-        % still needs yaw control inputs...
-        yaw_des.signals.values = zeros(n,1);
-        yaw_des.time = t;
-
 end
 
 
