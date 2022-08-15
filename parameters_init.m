@@ -12,7 +12,6 @@ formatSpec = "Simulation time of: %2.2f seconds \n";
 
 
 
-
 %% Simulation Constants
 fprintf(formatSpec, t_simulation)
 g = 9.81;
@@ -55,9 +54,19 @@ Gamma = ...
      -d*cT, 0 d*cT, 0;
      -cQ, cQ, -cQ, cQ;];
 GammaInv = inv(Gamma);
+
+%% State Space Definitions
+
+A = cat(2, zeros(6,6), eye(6));
+% B matrix needs some work. It needs to connect the inputs with the
+% outputs...
+% B = cat(2, zeros(3,4), Gamma);
+C = eye(12);
+D = 0;
 %% Gains section
 Gain.attitude.Kp = [.06, .06, .01]; %[3000, 3000, 3000]; % Coming directly from project_report
 Gain.attitude.Kd = [.013, .013, .03];%[0.013, 0.013, 0.03]; %[300, 300, 300];
+Gain.attitude.LQR = [1, 1, 1];
 Gain.position.Kp = [5, 5, 20];
 Gain.position.Kd = [5, 5, 10];
 Gain.motors.Kp = 1/cT;
