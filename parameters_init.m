@@ -48,21 +48,37 @@ switch model
 
 end
 
-Gamma = ...
-    [cT, cT, cT, cT;
-     0, d*cT, 0 -d*cT;
+Gamma = [0, d*cT, 0, -d*cT;
      -d*cT, 0 d*cT, 0;
      -cQ, cQ, -cQ, cQ;];
-GammaInv = inv(Gamma);
+% GammaInv = inv(Gamma);
 
 %% State Space Definitions
 
-A = cat(2, zeros(6,6), eye(6));
+Gamma = [0, d*cT, 0, -d*cT;
+     -d*cT, 0 d*cT, 0;
+     -cQ, cQ, -cQ, cQ;];
+A_attitude = cat(2, zeros(6,3), cat(1, eye(3,3), zeros(3,3)))
+B_attitude = cat(1, zeros(3,4), Gamma)
 % B matrix needs some work. It needs to connect the inputs with the
 % outputs...
 % B = cat(2, zeros(3,4), Gamma);
-C = eye(12);
-D = 0;
+C_attitude = cat(2, eye(3), zeros(3,3))
+D_attitude = zeros(3,4)
+% Gain.attitude = 
+penalties_state = [1/(.05^2), 1/(.05^2), 1/(.05^2), 0, 0, 0] ; %[deg]
+Q = diag(penalties_state) % State Penalties
+penalties_input = [1, 1, 1, 1]; 
+R = diag(penalties_input); % Input Penalties
+
+[K_lqr] = lqr(A_attitude, B_attitude, Q, R)
+
+A_CL_LQR = A_attitude - B_attitude*K_lqr;
+sys_CL_LQR = ss(A_CL_LQR, B_attitude, C_attitude, D_attitude);
+
+step(sys_CL_LQR);
+
+
 %% Gains section
 Gain.attitude.Kp = [.06, .06, .01]; %[3000, 3000, 3000]; % Coming directly from project_report
 Gain.attitude.Kd = [.013, .013, .03];%[0.013, 0.013, 0.03]; %[300, 300, 300];
@@ -122,5 +138,8 @@ end
 
 
 %%
+
+
+
 
 fprintf('Finished loading program parameters!\n')
