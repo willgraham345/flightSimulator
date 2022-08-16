@@ -6,7 +6,7 @@ fprintf('Started loading program parameters...\n')
 % Determine time of simulation here
 t_simulation = 5;
 model = 'crazyflie'; % crazyflie
-trajectoryType = 'diagonalXY'; % hover or linearX (future work should include linearY and box and circle)
+trajectoryType = 'hover'; % hover or linearX (future work should include linearY and box and circle)
 formatSpec = "Simulation time of: %2.2f seconds \n";
 
 
@@ -19,7 +19,6 @@ t = [0:.01:t_simulation]'; % Do not delete, these are so simulink thinks each va
 n = length(t);
 
 
-
 fprintf("Current dynamics of: %s\n", model)
 
 
@@ -28,7 +27,7 @@ Crazyflie.m = 0.0030; %[kg]
 Crazyflie.J = diag([1.43e-5, 1.43e-5, 2.89e-5]); % %[kgm^2] Inertia matrix about {B} frame (body frame)
 Crazyflie.d = 0.046; %[m] distance from center of mass to rotor
 Crazyflie.k_M = 1.5e-9; %[Nm/rpm^2]
-Crazyflie.k_f = 6.11e-8; %[N/rpm^2]
+Crazyflie.k_f = 6.11e-8;     %[N/rpm^2]
 Crazyflie.k_motor = 20; %[1/second]
 Crazyflie.RotMatrix = "ZXY"; %Order of rotations
 Crazyflie.drag = 0.1; %[kg/s]
@@ -48,18 +47,19 @@ switch model
 
 end
 
-Gamma = [0, d*cT, 0, -d*cT;
+Gamma = [cT, cT, cT, cT;
+    0, d*cT, 0, -d*cT;
      -d*cT, 0 d*cT, 0;
      -cQ, cQ, -cQ, cQ;];
-% GammaInv = inv(Gamma);
+GammaInv = inv(Gamma);
 
 %% State Space Definitions
 
-Gamma = [0, d*cT, 0, -d*cT;
+Gamma2 = [0, d*cT, 0, -d*cT;
      -d*cT, 0 d*cT, 0;
      -cQ, cQ, -cQ, cQ;];
 A_attitude = cat(2, zeros(6,3), cat(1, eye(3,3), zeros(3,3)))
-B_attitude = cat(1, zeros(3,4), Gamma)
+B_attitude = cat(1, zeros(3,4), Gamma2)
 % B matrix needs some work. It needs to connect the inputs with the
 % outputs...
 % B = cat(2, zeros(3,4), Gamma);

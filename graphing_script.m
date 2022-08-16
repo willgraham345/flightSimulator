@@ -8,7 +8,7 @@ omega_actual = out.omegas.Data;
 acceleration_actual = out.acceleration.Data;
 ThrustTau = out.ThrustTau.Data;
 % u1 = out.u1.Data;
-% u2 = out.u2.Data; 
+u2 = out.u2.Data; 
 e_R = out.error_R.Data;
 % velocity_actual = out.velocities_Data;
 
@@ -137,6 +137,6 @@ s19 = subplot(3,1,3);
 a19 = plot(out.tout, e_R(:,3));
 title('e_{\psi}');
 %% u1 plot
-fig7 = figure(7);
-s20 = plot(out.tout, u1(:,1));
-title('$u_1$     vs Time', 'Interpreter', 'latex')
+% fig7 = figure(7);
+% s20 = plot(out.tout, u1(:,1));
+% title('$u_1$     vs Time', 'Interpreter', 'latex')
