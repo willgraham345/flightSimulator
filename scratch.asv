@@ -1,4 +1,0 @@
-%% Playing around with trajectory planning
-close all; clear; clc; format compact;
-A = [0 1; 0 -1/5]
-
