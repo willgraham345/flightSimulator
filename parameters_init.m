@@ -4,18 +4,12 @@ close all; clear all; clc; format compact;
 fprintf('Started loading program parameters...\n')
 %% Load constants, determine simulation time, simulation dynamics
 % Determine time of simulation here
-t_simulation = 5;
-model = 'crazyflie'; % crazyflie
-trajectoryType = 'hover'; % hover or linearX (future work should include linearY and box and circle)
+t_simulation = 1;
 formatSpec = "Simulation time of: %2.2f seconds \n";
-
-
-
-
-%% Simulation Constants
+trajectoryType = 'hover'; % hover or linearX (future work should include linearY and box and circle)
 fprintf(formatSpec, t_simulation)
 g = 9.81;
-t = [0:.01:t_simulation]'; % Do not delete, these are so simulink thinks each value has a time associated with it
+t = linspace(0,t_simulation, 100)'; % Do not delete, these are so simulink thinks each value has a time associated with it
 n = length(t);
 
 
@@ -80,9 +74,8 @@ step(sys_CL_LQR);
 
 
 %% Gains section
-Gain.attitude.Kp = [.06, .06, .01]; %[3000, 3000, 3000]; % Coming directly from project_report
-Gain.attitude.Kd = [.013, .013, .03];%[0.013, 0.013, 0.03]; %[300, 300, 300];
-Gain.attitude.LQR = [1, 1, 1];
+Gain.attitude.Kp = 1.*ones(1,3); %[3000, 3000, 3000]; % Coming directly from project_report
+Gain.attitude.Kd = 300.*ones(1,3);%[0.013, 0.013, 0.03]; %[300, 300, 300];
 Gain.position.Kp = [5, 5, 20];
 Gain.position.Kd = [5, 5, 10];
 Gain.motors.Kp = 1/cT;
@@ -99,9 +92,10 @@ projectionMatrix = [1, 0, 0; 0, 1, 0];
 
 
 
+
+
 %% Trajectory Control Section
 fprintf("Trajectory is: %s\n", trajectoryType)
-
 switch trajectoryType
     case 'hover'
         wpts = [0, 0; 0, 0; 0, 0;];
@@ -133,6 +127,8 @@ switch trajectoryType
         % still needs yaw control inputs...
         yaw_des.signals.values = zeros(n,1);
         yaw_des.time = t;
+
+end
 
 end
 
