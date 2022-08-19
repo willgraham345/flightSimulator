@@ -8,8 +8,8 @@ t_simulation = 1;
 formatSpec = "Simulation time of: %2.2f seconds \n";
 trajectoryType = 'hover'; % hover or linearX (future work should include linearY and box and circle)
 fprintf(formatSpec, t_simulation)
-g = 0; %% CHANGE THIS
-t = linspace(0,t_simulation, 1000)'; % Do not delete, these are so simulink thinks each value has a time associated with it
+g = 9.81;
+t = linspace(0,t_simulation, 100)'; % Do not delete, these are so simulink thinks each value has a time associated with it
 n = length(t);
 
 
@@ -49,8 +49,8 @@ Gamma = ...
      -cQ, cQ, -cQ, cQ;];
 GammaInv = inv(Gamma);
 %% Gains section
-Gain.attitude.Kp = [.06, .06, .01]; %[3000, 3000, 3000]; % Coming directly from project_report
-Gain.attitude.Kd = [.013, .013, .03];%[0.013, 0.013, 0.03]; %[300, 300, 300];
+Gain.attitude.Kp = 1.*ones(1,3); %[3000, 3000, 3000]; % Coming directly from project_report
+Gain.attitude.Kd = 300.*ones(1,3);%[0.013, 0.013, 0.03]; %[300, 300, 300];
 Gain.position.Kp = [5, 5, 20];
 Gain.position.Kd = [5, 5, 10];
 Gain.motors.Kp = 1/cT;
