@@ -4,11 +4,12 @@ close all; clear all; clc; format compact;
 fprintf('Started loading program parameters...\n')
 %% Load constants, determine simulation time, simulation dynamics
 % Determine time of simulation here
-t_simulation = 5;
+t_simulation = 1;
 formatSpec = "Simulation time of: %2.2f seconds \n";
+trajectoryType = 'hover'; % hover or linearX (future work should include linearY and box and circle)
 fprintf(formatSpec, t_simulation)
-g = 9.81;
-t = [0:.01:t_simulation]'; % Do not delete, these are so simulink thinks each value has a time associated with it
+g = 0; %% CHANGE THIS
+t = linspace(0,t_simulation, 1000)'; % Do not delete, these are so simulink thinks each value has a time associated with it
 n = length(t);
 
 
@@ -61,26 +62,45 @@ dragConstants = [dx, dy, 0]; % Random values, just threw these in
 projectionMatrix = [1, 0, 0; 0, 1, 0]; % 
 % flapMatrix = [A1c, -A1s, 0; A1s, A1c, 0; 0, 0, 0];
 
-%% Free Body Simulator Motor stuff (probably can delete later)
-% syms x
-% z_piecewise = piecewise(x < 5, m*g*1.1, x>= 5, m*g*.9);
-% zVals = double(subs(z_piecewise, x, t));
-% fake_motors.signals.values = [zVals, 0.*t, 0.*t, 0.*t];
-% fake_motors.time = t;
-% XYZ_initial_condition = [0, 0, 0];
+
 
 
 
 %% Trajectory Control Section
+fprintf("Trajectory is: %s\n", trajectoryType)
+switch trajectoryType
+    case 'hover'
+        wpts = [0, 0; 0, 0; 0, 0;];
+        tpts = [0; 10];
+        [q,qd,qdd,pp] = quinticpolytraj(wpts,tpts, t);
+        zeta_des.signals.values = q';
+        zeta_des.time = t;
+        
+        % still needs yaw control inputs...
+        yaw_des.signals.values = zeros(n,1);
+        yaw_des.time = t;
+    case 'linearX'
+        wpts = [0, 1; 0, 0; 0, 0;];
+        tpts = [0; 5];
+        [q,qd,qdd,pp] = quinticpolytraj(wpts,tpts, t);
+        zeta_des.signals.values = q';
+        zeta_des.time = t;
+        
+        % still needs yaw control inputs...
+        yaw_des.signals.values = zeros(n,1);
+        yaw_des.time = t;
+    case 'diagonalXY'
+        wpts = [0, 1; 0, 1; 0, 0;];
+        tpts = [0; 5];
+        [q,qd,qdd,pp] = quinticpolytraj(wpts,tpts, t);
+        zeta_des.signals.values = q';
+        zeta_des.time = t;
+        
+        % still needs yaw control inputs...
+        yaw_des.signals.values = zeros(n,1);
+        yaw_des.time = t;
 
-% wpts = [0, 0; 0, 0; 0, 0;];
-% tpts = [0; 10];
-% [q,qd,qdd,pp] = quinticpolytraj(wpts,tpts, t);
-% zeta_des.signals.values = q';
-% zeta_des.time = t;
-% % still needs yaw control inputs...
-% yaw_des.signals.values = zeros(n,1);
-% yaw_des.time = t;
+end
 
 
 %%
