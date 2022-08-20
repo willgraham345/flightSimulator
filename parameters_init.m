@@ -4,8 +4,9 @@ close all; clear all; clc; format compact;
 fprintf('Started loading program parameters...\n')
 %% Load constants, determine simulation time, simulation dynamics
 % Determine time of simulation here
-t_simulation = 1;
+t_simulation = 5;
 formatSpec = "Simulation time of: %2.2f seconds \n";
+model = 'crazyflie';
 trajectoryType = 'hover'; % hover or linearX (future work should include linearY and box and circle)
 fprintf(formatSpec, t_simulation)
 g = 9.81;
@@ -13,7 +14,7 @@ t = linspace(0,t_simulation, 100)'; % Do not delete, these are so simulink think
 n = length(t);
 
 
-fprintf("Current dynamics of: %s\n", model)
+fprintf("Current model dynamics: %s\n", model)
 
 
 % Crazyflie dymamics
@@ -25,9 +26,6 @@ Crazyflie.k_f = 6.11e-8;     %[N/rpm^2]
 Crazyflie.k_motor = 20; %[1/second]
 Crazyflie.RotMatrix = "ZXY"; %Order of rotations
 Crazyflie.drag = 0.1; %[kg/s]
-
-
-
 
 %% Determine which model to load
 switch model
@@ -48,29 +46,6 @@ Gamma = [cT, cT, cT, cT;
 GammaInv = inv(Gamma);
 
 %% State Space Definitions
-
-Gamma2 = [0, d*cT, 0, -d*cT;
-     -d*cT, 0 d*cT, 0;
-     -cQ, cQ, -cQ, cQ;];
-A_attitude = cat(2, zeros(6,3), cat(1, eye(3,3), zeros(3,3)))
-B_attitude = cat(1, zeros(3,4), Gamma2)
-% B matrix needs some work. It needs to connect the inputs with the
-% outputs...
-% B = cat(2, zeros(3,4), Gamma);
-C_attitude = cat(2, eye(3), zeros(3,3))
-D_attitude = zeros(3,4)
-% Gain.attitude = 
-penalties_state = [1/(.05^2), 1/(.05^2), 1/(.05^2), 0, 0, 0] ; %[deg]
-Q = diag(penalties_state) % State Penalties
-penalties_input = [1, 1, 1, 1]; 
-R = diag(penalties_input); % Input Penalties
-
-[K_lqr] = lqr(A_attitude, B_attitude, Q, R)
-
-A_CL_LQR = A_attitude - B_attitude*K_lqr;
-sys_CL_LQR = ss(A_CL_LQR, B_attitude, C_attitude, D_attitude);
-
-step(sys_CL_LQR);
 
 
 %% Gains section
@@ -130,12 +105,9 @@ switch trajectoryType
 
 end
 
-end
+
 
 
 %%
-
-
-
 
 fprintf('Finished loading program parameters!\n')
