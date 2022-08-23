@@ -7,7 +7,7 @@ fprintf('Started loading program parameters...\n')
 t_simulation = 5;
 formatSpec = "Simulation time of: %2.2f seconds \n";
 model = 'crazyflie';
-trajectoryType = 'hover'; % hover or linearX (future work should include linearY and box and circle)
+trajectoryType = 'linearX'; % hover or linearX (future work should include linearY and box and circle)
 fprintf(formatSpec, t_simulation)
 g = 9.81;
 t = linspace(0,t_simulation, 100)'; % Do not delete, these are so simulink thinks each value has a time associated with it
@@ -74,7 +74,7 @@ fprintf("Trajectory is: %s\n", trajectoryType)
 switch trajectoryType
     case 'hover'
         wpts = [0, 0; 0, 0; 0, 0;];
-        tpts = [0; 10];
+        tpts = [0, 10; 0, 10; 0, 10];
         [q,qd,qdd,pp] = quinticpolytraj(wpts,tpts, t);
         zeta_des.signals.values = q';
         zeta_des.time = t;
@@ -83,19 +83,24 @@ switch trajectoryType
         yaw_des.signals.values = zeros(n,1);
         yaw_des.time = t;
     case 'linearX'
-        wpts = [0, 1; 0, 0; 0, 0;];
-        tpts = [0; 5];
+        wpts = [0, 0, 1; 0, 0, 0; 0, 1, 1;];
+        tpts = [0, 3, 5];
         [q,qd,qdd,pp] = quinticpolytraj(wpts,tpts, t);
-        zeta_des.signals.values = q';
-        zeta_des.time = t;
+        traj.signals.values = q;
+        traj.time = cat(1, linspace(0, tpts(end), size(qd,2)), linspace(0, tpts(end), size(qd,2)), linspace(0, tpts(end), size(qd,2)));
+%         traj_ddot.signals.values = qdd;
+%         traj_ddot.time = linspace(0, tpts(end), size(qd,2));
+%         zeta_des.signals.values = q';
+%         zeta_des.time = t;
         
         % still needs yaw control inputs...
         yaw_des.signals.values = zeros(n,1);
         yaw_des.time = t;
     case 'diagonalXY'
         wpts = [0, 1; 0, 1; 0, 0;];
-        tpts = [0; 5];
+        tpts = [0, 5];
         [q,qd,qdd,pp] = quinticpolytraj(wpts,tpts, t);
+        
         zeta_des.signals.values = q';
         zeta_des.time = t;
         
@@ -105,8 +110,22 @@ switch trajectoryType
 
 end
 
+%% RPY from calculations stuff
+X_des.signals.values = q(1,:)'; X_des.time = t;
+X_ddot_des.signals.values = qdd(1,:)'; X_ddot_des.time = t;
+Y_des.signals.values = q(2,:)'; Y_des.time = t;
+Y_ddot_des.signals.values = qdd(2,:)'; Y_ddot_des.time = t;
 
-
+Z_des.signals.values = q(3,:)'; Z_des.time = t;
+Z_ddot_des.signals.values = qdd(1,:)'; Z_ddot_des.time = t;
+n = size(q,2);
+for i = 1:n
+    phi(i) = 1 / g * ( X_ddot_des.signals.values(i) * sin(yaw_des.signals.values(i)) - Y_ddot_des.signals.values(i)*cos(yaw_des.signals.values(i)));
+    theta(i) = 1 / g *( X_ddot_des.signals.values(i) * cos(yaw_des.signals.values(i)) + Y_ddot_des.signals.values(i)*sin(yaw_des.signals.values(i)));
+end
+phi_des.signals.values = phi'; phi_des.time = t;
+theta_des.signals.values = theta'; theta_des.time = t;
+% attitude_des = [phi_des.signals.values, theta_des.signals.values, yaw_des.signals.values];
 
 %%
 

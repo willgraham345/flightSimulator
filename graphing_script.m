@@ -3,7 +3,7 @@ close all; clc
 % out = sim('flightSimulator.slx',t_simulation); % most basic way to simulate with command script.
 XYZ = out.XYZ.Data;
 attitude_actual = out.attitude.Data;
-% attitude_des = out.attitude_des.Data;
+attitude_des = out.attitude_des.Data;
 omega_actual = out.omegas.Data;
 acceleration_actual = out.acceleration.Data;
 ThrustTau = out.ThrustTau.Data;
@@ -18,24 +18,36 @@ if exist("XYZ")
     fig1 = figure(1);
     sgtitle('$\zeta$ and $\zeta_{des}$ vs Time', 'Interpreter','latex');
     s1 = subplot(3,1,1);
-    d1 = plot(t,zeta_des.signals.values(:,1), 'DisplayName', 'X des');
+    d1 = plot(t,X_des.signals.values, 'DisplayName', 'X des');
     hold on
     a1 = plot(out.tout, XYZ(:,1), 'DisplayName', 'X');
     title("X");
     legend();
     
     s2 = subplot(3,1,2);
-    d2 = plot(t,zeta_des.signals.values(:,2), 'DisplayName', 'Y des');
+    d2 = plot(t,Y_des.signals.values, 'DisplayName', 'Y des');
     hold on
     a2 = plot(out.tout, XYZ(:,2), 'DisplayName','Y');
     legend();
     title("Y");
     s3 = subplot(3,1,3);
-    d3 = plot(t,zeta_des.signals.values(:,3), 'DisplayName', 'Z des');
+    d3 = plot(t,Z_des.signals.values, 'DisplayName', 'Z des');
     hold on
     a3 = plot(out.tout, XYZ(:,3),'DisplayName', 'Z');
     legend();
     title("Z");
+
+    
+    fig8 = figure(8);
+    sgtitle('$\zeta_{des}$ vs $\zeta$ 3D', 'Interpreter','latex');
+    a8 = plot3(X_des.signals.values, Y_des.signals.values, Z_des.signals.values, 'DisplayName', '\zeta_{des}');
+    hold on
+    b8 = plot3(XYZ(:,1), XYZ(:,2), XYZ(:,3), 'DisplayName', '\zeta');
+    grid on;
+    xlabel('X [m]')
+    ylabel('Y [m]')
+    zlabel('Z [m]')
+    legend()
 end
 %% Attitude Plot
 % 
