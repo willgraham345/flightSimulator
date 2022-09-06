@@ -37,6 +37,14 @@ if exist("XYZ")
     legend();
     title("Z");
 
+
+    % integrate this soon:
+%     poseplot(ones("quaternion"),[0 0 0],MeshFileName="multirotor.stl", PatchFaceColor=[1 0 0],PatchFaceColor='k', PatchFaceAlpha=1);
+%     % poseplot(ones("quaternion"),[0 0 0],);
+%     xlabel("North-x (m)")
+%     ylabel("East-y (m)")
+%     zlabel("Down-z (m)")
+
     
     fig8 = figure(8);
     sgtitle('$\zeta_{des}$ vs $\zeta$ 3D', 'Interpreter','latex');
