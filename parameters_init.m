@@ -25,7 +25,7 @@ Crazyflie.k_M = 1.5e-9; %[Nm/rpm^2]
 Crazyflie.k_f = 6.11e-8;     %[N/rpm^2]
 Crazyflie.k_motor = 20; %[1/second]
 Crazyflie.RotMatrix = "ZXY"; %Order of rotations
-Crazyflie.drag = 0.1; %[kg/s]
+Crazyflie.drag = [0.1, 0.1, .5]; %[kg/s]
 
 %% Determine which model to load
 switch model
@@ -36,14 +36,16 @@ switch model
     J_inv = inv(J);
     cT = Crazyflie.k_f; % Thrust coefficient (Couples motor speed (omega^2) to thrust), determined from static thrust tests
     cQ = Crazyflie.k_M; % Moment coefficient [look @ Crazyflie for units
-
-end
-
-Gamma = [cT, cT, cT, cT;
+    Gamma = [cT, cT, cT, cT;
     0, d*cT, 0, -d*cT;
      -d*cT, 0 d*cT, 0;
      -cQ, cQ, -cQ, cQ;];
-GammaInv = inv(Gamma);
+    GammaInv = inv(Gamma);
+    dragConstants = [1, 1, 3]; %[N/ms] Assuming these here (dx, dy, dz)
+
+end
+
+
 
 %% State Space Definitions
 

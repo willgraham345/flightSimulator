@@ -1,4 +1,5 @@
 %% Graphing function
+
 close all; clc
 % out = sim('flightSimulator.slx',t_simulation); % most basic way to simulate with command script.
 XYZ = out.XYZ.Data;
@@ -11,9 +12,11 @@ ThrustTau = out.ThrustTau.Data;
 u2 = out.u2.Data; 
 e_R = out.e_R.Data;
 % velocity_actual = out.velocities_Data;
+dragForces = out.dragForces;
 
 
 %% zeta plot
+idx = [];
 if exist("XYZ")
     fig1 = figure(1);
     sgtitle('$\zeta$ and $\zeta_{des}$ vs Time', 'Interpreter','latex');
@@ -36,26 +39,51 @@ if exist("XYZ")
     a3 = plot(out.tout, XYZ(:,3),'DisplayName', 'Z');
     legend();
     title("Z");
+    hold off
+    
+    
 
-
-    % integrate this soon:
-%     poseplot(ones("quaternion"),[0 0 0],MeshFileName="multirotor.stl", PatchFaceColor=[1 0 0],PatchFaceColor='k', PatchFaceAlpha=1);
-%     % poseplot(ones("quaternion"),[0 0 0],);
-%     xlabel("North-x (m)")
-%     ylabel("East-y (m)")
-%     zlabel("Down-z (m)")
 
     
-    fig8 = figure(8);
-    sgtitle('$\zeta_{des}$ vs $\zeta$ 3D', 'Interpreter','latex');
-    a8 = plot3(X_des.signals.values, Y_des.signals.values, Z_des.signals.values, 'DisplayName', '\zeta_{des}');
-    hold on
-    b8 = plot3(XYZ(:,1), XYZ(:,2), XYZ(:,3), 'DisplayName', '\zeta');
-    grid on;
-    xlabel('X [m]')
-    ylabel('Y [m]')
-    zlabel('Z [m]')
+    
+    if exist("attitude_actual")
+
+        fig8 = figure(8);
+        sgtitle('$\zeta_{des}$ vs $\zeta$ 3D', 'Interpreter','latex');
+        a8 = plot3(X_des.signals.values, Y_des.signals.values, Z_des.signals.values, 'DisplayName', '\zeta_{des}');
+        hold on
+        b8 = plot3(XYZ(:,1), XYZ(:,2), XYZ(:,3), 'DisplayName', '\zeta');
+        grid on;
+        xlabel('X [m]')
+        ylabel('Y [m]')
+        zlabel('Z [m]')
+
+
+        
+
+    else
+
+        numDataPoints = length(XYZ);
+        howManyAttitudeDescriptions3Dplot = 3;
+        for i = 1:howManyAttitudeDescriptions3Dplot
+            idx(i) = fix(numDataPoints/i);
+        end
+        idx(end+1) = 1;
+        fig8 = figure(8);
+        poseGraph = poseGraph3D('MaxNumNodes', howManyAttitudeDescriptions3Dplot);
+        for i = [length(idx)+1:1]
+            addPointLandmark(poseGraph, XYZ(i,:));
+            addPointLandmark(poseGraph, XYZ(i,:));
+            fprintf("loop")
+            
+        end
+        show(poseGraph)
+        view(-30,45)
+        
+    end
     legend()
+    hold off
+
 end
 %% Attitude Plot
 % 
@@ -197,4 +225,10 @@ if exist('u1')
 % s20 = plot(out.tout, u1(:,1));
 % title('$u_1$     vs Time', 'Interpreter', 'latex')
 endtitle('e_{\psi}');
+end
+
+%% Drag plot
+if exist('dragForces')
+    fig9 = figure(9);
+    s21 = plot(out.tout, dragForces.Data(:,:));
 end
