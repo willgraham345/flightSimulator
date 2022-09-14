@@ -66,7 +66,7 @@ if exist("XYZ")
         numDataPoints = length(XYZ);
         howManyAttitudeDescriptions3Dplot = 3;
         for i = 1:howManyAttitudeDescriptions3Dplot
-            idx(i) = fix(numDataPoints/i);
+            idx(i) = fix(numDataPoints/i); % Converts division to an integer
         end
         idx(end+1) = 1;
         fig8 = figure(8);
