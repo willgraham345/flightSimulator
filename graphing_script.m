@@ -1,7 +1,7 @@
 %% Graphing function
 
 close all; clc
-% out = sim('flightSimulator.slx',t_simulation); % most basic way to simulate with command script.
+out = sim('flightSimulator.slx',t_simulation); % most basic way to simulate with command script.
 XYZ = out.XYZ.Data;
 attitude_actual = out.attitude.Data;
 attitude_des = out.attitude_des.Data;
