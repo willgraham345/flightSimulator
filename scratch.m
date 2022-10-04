@@ -48,3 +48,21 @@ qZYX = eul2quat(eul)
 qZYX_1 = quatconj(qZYX)
 
 n1 = qZYX*r
+
+
+%% 
+clear; close all; format compact; clc;
+% A = zeros(4,4)
+n = 1000;
+acc = zeros(n, 3);
+tspan = linspace(0, 5, n);
+xAngVel = @(t) sin(3.*t) + 4.*t.^2;
+yAngVel = @(t) -5.*t
+zAngVel = @(t) -3.*t.^3 - 13.*t.^2 + 13;
+angVel.signals.values = [xAngVel(tspan); yAngVel(tspan); zAngVel(tspan)]';
+angVel.time = tspan;
+psi0 = 0; theta0 = 0; phi0 = 0;
+q0 = angle2quat(psi0,theta0, phi0)
+%% figures
+
+[accelReadings_true, gyroReadings] = IMU(acc, angVel)
