@@ -24,7 +24,7 @@ Crazyflie.d = 0.046; %[m] distance from center of mass to rotor
 Crazyflie.k_M = 1.5e-9; %[Nm/rpm^2]
 Crazyflie.k_f = 6.11e-8;     %[N/rpm^2]
 Crazyflie.k_motor = 20; %[1/second]
-Crazyflie.RotMatrix = "ZXY"; %Order of rotations
+Crazyflie.RotMatrix = "ZYX"; %Order of rotations
 Crazyflie.drag = [0.1, 0.1, .5]; %[kg/s]
 
 %% Determine which model to load
@@ -42,12 +42,19 @@ switch model
      -cQ, cQ, -cQ, cQ;];
     GammaInv = inv(Gamma);
     dragConstants = [1, 1, 3]; %[N/ms] Assuming these here (dx, dy, dz)
+    case 'example'
+        J  = diag([0.082, 0.0845, 0.1377]);
+        m = 4.34;
+        d = 3.15;
+        ct_f = 8.004e-4;
+        kx = 16*m;
+        kv = 5.6*m;
+        kR = 8.81;
+        komega = 2.54;
 
 end
 
 
-
-%% State Space Definitions
 
 
 %% Gains section
@@ -130,5 +137,9 @@ theta_des.signals.values = theta'; theta_des.time = t;
 % attitude_des = [phi_des.signals.values, theta_des.signals.values, yaw_des.signals.values];
 
 %%
+tspan = [0:.1:3]';
+angleTrajs.time = tspan; fn = @(t) sin(t*3); fn2 = @(t)0*t;
+angleTrajs.signals.values = [fn(tspan),  fn2(tspan),  fn2(tspan)];
+
 
 fprintf('Finished loading program parameters!\n')
