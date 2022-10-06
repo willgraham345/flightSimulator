@@ -64,5 +64,14 @@ angVel.time = tspan;
 psi0 = 0; theta0 = 0; phi0 = 0;
 q0 = angle2quat(psi0,theta0, phi0)
 %% figures
+razyflie.m = 0.0030; %[kg]
+Crazyflie.J = diag([1.43e-5, 1.43e-5, 2.89e-5]); % %[kgm^2] Inertia matrix about {B} frame (body frame)
+Crazyflie.d = 0.046; %[m] distance from center of mass to rotor
+Crazyflie.k_M = 1.5e-9; %[Nm/rpm^2]
+Crazyflie.k_f = 6.11e-8;     %[N/rpm^2]
+Crazyflie.k_motor = 20; %[1/second]
+Crazyflie.RotMatrix = "ZYX"; %Order of rotations
+Crazyflie.drag = [0.1, 0.1, .5]; %[kg/s]
 
-[accelReadings_true, gyroReadings] = IMU(acc, angVel)
+X = zeros(12,1); U = ones(4,1);
+% cf_firstOrderStateMdl(X, U, J_matrix, Gamma)
