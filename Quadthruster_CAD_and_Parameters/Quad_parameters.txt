@@ -1,0 +1,32 @@
+Mass properties of Assembly
+     Configuration: Default
+     Coordinate system: -- default --
+
+Mass = 0.05 grams
+
+Volume = 46.96 cubic millimeters
+
+Surface area = 1592.72  square millimeters
+
+Center of mass: ( millimeters )
+	X = 10.90
+	Y = 13.44
+	Z = 18.31
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = ( 1.00,  0.00,  0.00)   	Px = 2.38
+	 Iy = ( 0.00,  0.00, -1.00)   	Py = 2.58
+	 Iz = ( 0.00,  1.00,  0.00)   	Pz = 4.75
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 2.38	Lxy = 0.00	Lxz = 0.00
+	Lyx = 0.00	Lyy = 4.75	Lyz = 0.00
+	Lzx = 0.00	Lzy = 0.00	Lzz = 2.58
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 26.60	Ixy = 6.88	Ixz = 9.37
+	Iyx = 6.88	Iyy = 26.06	Iyz = 11.56
+	Izx = 9.37	Izy = 11.56	Izz = 16.65

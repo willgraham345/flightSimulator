@@ -2,51 +2,67 @@
 close all; clear all; clc; format compact;
 
 fprintf('Started loading program parameters...\n')
-%% Load yconstants, determine simulation time, simulation dynamics
-% Determine time of simulation here
-t_simulation = 10;
-formatSpec = "Simulation time of: %2.2f seconds \n";
-model = 'crazyflie';
+%% Simulation Parameters
+t_simulation = 3;
+model = 'quadthruster'; % crazyflie or quadthruster or example
 trajectoryType = 'linearX'; % hover or linearX (future work should include linearY and box and circle)
-fprintf(formatSpec, t_simulation)
+
+
+% Simulation characteristics
+seed = randi(1000, [1,5]);
+Moment_noise = 1e-12;%5e-8;
+Force_noise = 0;%6e-8;
+
+
+
+% constants across simulations
 g = 9.81;
-t = linspace(0,t_simulation, 100)'; % Do not delete, these are so simulink thinks each value has a time associated with it
+t = linspace(0,t_simulation, 100)'; % Generate for simulink trajectories
+t_sample = t(2) - t(1);
 n = length(t);
 
-
+% output simulation stuff
+formatSpec = "Simulation time of: %2.2f seconds \n";
+fprintf(formatSpec, t_simulation)
 fprintf("Current model dynamics: %s\n", model)
-
-
-% Crazyflie dymamics
-Crazyflie.m = 0.0030; %[kg]
-Crazyflie.J = diag([1.43e-5, 1.43e-5, 2.89e-5]); % %[kgm^2] Inertia matrix about {B} frame (body frame)
-Crazyflie.d = 0.046; %[m] distance from center of mass to rotor
-Crazyflie.k_M = 1.5e-9; %[Nm/rpm^2]
-Crazyflie.k_f = 6.11e-8;     %[N/rpm^2]
-Crazyflie.k_motor = 20; %[1/second]
-Crazyflie.RotMatrix = "ZYX"; %Order of rotations
-Crazyflie.drag = [0.1, 0.1, .5]; %[kg/s]
-Crazyflie.X0 = [0, 0, 0];
-Crazyflie.v0 = [0, 0, 0];
-Crazyflie.RPY_0 = [0, 0, 0];
-Crazyflie.pqr_0 = [0, 0, 0];
-
 
 %% Determine which model to load
 switch model
     case 'crazyflie'
-    m = Crazyflie.m;
-    J = Crazyflie.J;
-    d = Crazyflie.d;
-    J_inv = inv(J);
-    cT = Crazyflie.k_f; % Thrust coefficient (Couples motor speed (omega^2) to thrust), determined from static thrust tests
-    cQ = Crazyflie.k_M; % Moment coefficient [look @ Crazyflie for units
-    Gamma = [cT, cT, cT, cT;
-    0, d*cT, 0, -d*cT;
-     -d*cT, 0 d*cT, 0;
-     -cQ, cQ, -cQ, cQ;];
-    GammaInv = inv(Gamma);
-    dragConstants = [1, 1, 3]; %[N/ms] Assuming these here (dx, dy, dz)
+        m = 0.0030; %[kg]
+        J = diag([1.43e-5, 1.43e-5, 2.89e-5]); % %[kgm^2] Inertia matrix about {B} frame (body frame)
+        d = 0.046; %[m] distance from center of mass to rotor
+        J_inv = inv(J);
+%         k_M = 1.5e-9; %[Nm/rpm^2]
+%         k_f = 6.11e-8;     %[N/rpm^2]
+%         k_motor = 20; %[1/second]
+%         drag = [0.1, 0.1, .5]; %[kg/s]
+%         inertial2body_rotationOrder = 'ZYX';
+
+
+        cT = k_f; % Thrust coefficient (Couples motor speed (omega^2) to thrust), determined from static thrust tests
+        cQ = k_M; % Moment coefficient [look @ Crazyflie for units
+        X0 = [0, 0, 0];
+        v0 = [0, 0, 0];
+        RPY_0 = [0, 0, 0];
+        pqr_0 = [0, 0, 0];
+
+%         Gamma = [cT, cT, cT, cT;
+%             0, d*cT, 0, -d*cT;
+%             -d*cT, 0 d*cT, 0;
+%             -cQ, cQ, -cQ, cQ;];
+%         GammaInv = inv(Gamma);
+%         dragConstants = [1, 1, 3]; %[N/ms] Assuming these here (dx, dy, dz)
+    case 'quadthruster'
+        m = 0.05 * 1e-3; % [kg] (1 g = 1e-3kg)
+        J = diag([2.38, 2.58, 4.75]) * 1e-9; %[kg*m^2] (1 g*mm^2 = 1e-9 kg*m^2)
+        J_inv = inv(J);
+        d = 9.86 * 1e-3; %m (mm to meter conversion)
+        X0 = [0, 0, 0];
+        v0 = [0, 0, 0];
+        RPY_0 = [0, 0, 0];
+        pqr_0 = [0, 0, 0];
+
     case 'example'
         J  = diag([0.082, 0.0845, 0.1377]);
         m = 4.34;
