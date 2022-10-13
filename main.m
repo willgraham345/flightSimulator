@@ -1,17 +1,20 @@
 %% 
-close all; clear all; clc; format compact;
+clear;
+clc;
+close all;
+format compact;
 
 fprintf('Started loading program parameters...\n')
 %% Simulation Parameters
 t_simulation = 3;
-model = 'quadthruster'; % crazyflie or quadthruster or example
+model = 'crazyflie'; % crazyflie or quadthruster or example
 trajectoryType = 'linearX'; % hover or linearX (future work should include linearY and box and circle)
-
+outputDataAnalysis = 1;
 
 % Simulation characteristics
 seed = randi(1000, [1,5]);
-Moment_noise = 1e-12;%5e-8;
-Force_noise = 0;%6e-8;
+Moment_noise = 1e-8;%5e-8;
+Force_noise = 1e-8;%6e-8;
 
 
 
@@ -40,8 +43,8 @@ switch model
 %         inertial2body_rotationOrder = 'ZYX';
 
 
-        cT = k_f; % Thrust coefficient (Couples motor speed (omega^2) to thrust), determined from static thrust tests
-        cQ = k_M; % Moment coefficient [look @ Crazyflie for units
+%         cT = k_f; % Thrust coefficient (Couples motor speed (omega^2) to thrust), determined from static thrust tests
+%         cQ = k_M; % Moment coefficient [look @ Crazyflie for units
         X0 = [0, 0, 0];
         v0 = [0, 0, 0];
         RPY_0 = [0, 0, 0];
@@ -75,22 +78,58 @@ switch model
 
 end
 
-
-
-%% Angle Trajectories
-tspan = [0:.1:t_simulation]';
-angleTrajs.time = tspan; fn = @(t) pi/2*cos(0.1*t); fn2 = @(t)0*t;
-angleTrajs.signals.values = [fn2(tspan),  fn2(tspan),  fn2(tspan)];
-
-
 fprintf('Finished loading program parameters!\n')
 
 %% running simulation and taking out params
-fprintf('Running Simulation\n')
+% fprintf('Running Simulation\n')
+% out = sim("flightSimulator.slx", t_simulation);
+% Xe = out.Xe;
+% RPY = out.RPY;
+% e_RPY = out.e_RPY;
+% u1_u2 = out.u1_u2;
+% omega_b = out.omega_b
+% % quatDirections = out.quatDirections;
+% fprintf('Simulation Finished :) \n')
+
+
+%%
+% if (outputDataAnalysis == 1)
+%     fprintf('Starting Data Analysis \n')
+%     dimensionName = ["X (mm)", "Y (mm)", "Z (mm)", "Roll (deg)", "Pitch (deg)", "Yaw (deg)"]';
+%     mean = [Xe.mean'* 1e3; RPY.mean'* (180/pi)];
+%     std = [Xe.std'* 1e3; RPY.std'* (180/pi)];
+%     max = [Xe.max'* 1e3; RPY.max'* (180/pi)];
+% 
+% 
+% 
+%     T = table(field, mean,std, max);
+% 
+% 
+% 
+% end
+
+[out, mean, std, max] = runSim(t_simulation)
+% noiseParams = [1e-8, 1e-8;
+%     1e-10, 1e-10];
+% 
+% for i = [1:size(noiseParams(:,1))]
+% 
+% end
+
+%%
+
+function [out, mean, std, max] = runSim(t_simulation, noiseVec)
+fprintf('Starting function')
 out = sim("flightSimulator.slx", t_simulation);
 Xe = out.Xe;
 RPY = out.RPY;
 e_RPY = out.e_RPY;
 u1_u2 = out.u1_u2;
-% quatDirections = out.quatDirections;
-fprintf('Simulation Finished :) \n')
+omega_b = out.omega_b
+fprintf('Starting Data Analysis \n')
+dimensionName = ["X (mm)", "Y (mm)", "Z (mm)", "Roll (deg)", "Pitch (deg)", "Yaw (deg)", ...
+    "Roll Vel (deg/s)", "Pitch Vel (deg/s)", "Yaw Vel(deg/s)"]';
+mean = [Xe.mean'* 1e3; RPY.mean'* (180/pi); omega_b.mean'*(180/pi)];
+std = [Xe.std'* 1e3; RPY.std'* (180/pi); omega_b.std'*(180/pi)];
+max = [Xe.max'* 1e3; RPY.max'* (180/pi); omega_b.max'*(180/pi)];
+end
