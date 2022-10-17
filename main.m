@@ -7,14 +7,14 @@ format compact;
 fprintf('Started loading program parameters...\n')
 %% Simulation Parameters
 t_simulation = 3;
-model = 'crazyflie'; % crazyflie or quadthruster or example
+model = 'quadthruster'; % crazyflie or quadthruster or example
 trajectoryType = 'linearX'; % hover or linearX (future work should include linearY and box and circle)
 outputDataAnalysis = 1;
 
 % Simulation characteristics
 seed = randi(1000, [1,5]);
 Moment_noise = 1e-8;%5e-8;
-Force_noise = 1e-8;%6e-8;
+Force_noise = 0;%6e-8;
 
 
 
@@ -94,7 +94,7 @@ fprintf('Finished loading program parameters!\n')
 
 %%
 numSims = 100
-momentNoiseRange = logspace(-12, -3, 100);
+momentNoiseRange = logspace(-14, -3, 100);
 forceNoiseRange = zeros([1,n]);
 
 noise = [momentNoiseRange', forceNoiseRange'];
@@ -140,18 +140,17 @@ legend('X Max', 'Y Max', 'Z Max');
 xlabel("Noise [N*m]")
 ylabel("Max Value [mm]")
 ylim([-100, 100])
-
 subplot(3,1,2)
 title('Max Displacement')
 semilogx(momentNoiseRange, XYZ_means)
 legend('X Mean', 'Y Mean', 'Z Mean');
 xlabel("Noise [N*m]")
-ylabel("Max Value [mm]")
+ylabel("Mean Value [mm]")
 subplot(3,1,3)
 semilogx(momentNoiseRange,XYZ_std)
 legend('X STD', 'Y STD', 'Z STD');
 xlabel("Noise [N*m]")
-ylabel("Max Value [mm]")
+ylabel("STD Value [mm]")
 
 f2 = figure(2)
 sgtitle('RPY Noise and Stability')
@@ -162,25 +161,24 @@ legend('Roll Max', 'Pitch Max', 'Yaw Max');
 xlabel("Noise [N*m]")
 ylabel("Max Value [deg]")
 ylim([-30, 30]);
-
 subplot(3,1,2)
 title('Max Displacement')
 semilogx(momentNoiseRange, RPY_means)
 legend('Roll Mean', 'Pitch Mean', 'Yaw Mean');
 xlabel("Noise [N*m]")
-ylabel("Max Value [deg]")
+ylabel("Mean Value [deg]")
 ylim([-30, 30]);
 subplot(3,1,3)
 semilogx(momentNoiseRange,RPY_std)
 legend('Roll STD', 'Pitch STD', 'Yaw STD');
 xlabel("Noise [N*m]")
-ylabel("Max Value [deg]")
+ylabel("STD Value [deg]")
 ylim([-30, 30]);
 
 f3 = figure(3)
 sgtitle('RPY Rate Noise and Stability')
 subplot(3,1,1)
-title("Mean Displacement")
+title("Max Displacement")
 semilogx(momentNoiseRange, RPYrate_max)
 legend('Roll Rate Max', 'Pitch Rate Max', 'Yaw Rate Max');
 xlabel("Noise [N*m]")
@@ -192,13 +190,13 @@ title('Max Displacement')
 semilogx(momentNoiseRange, RPYrate_means)
 legend('Roll Rate Mean', 'Pitch Rate Mean', 'Yaw Rate Mean');
 xlabel("Noise [N*m]")
-ylabel("Max Value [deg/s]")
+ylabel("Mean Value [deg/s]")
 ylim([-30, 30]);
 subplot(3,1,3)
 semilogx(momentNoiseRange,RPYrate_std)
 legend('Roll Rate STD', 'Pitch Rate STD', 'Yaw Rate STD');
 xlabel("Noise")
-ylabel("Max Value [deg/s]")
+ylabel("STD Value [deg/s]")
 ylim([-30, 30]);
 
 %%
